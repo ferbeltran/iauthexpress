@@ -1,23 +1,37 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/colors.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => new _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool _hidePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
 
     return new Scaffold(
+      resizeToAvoidBottomPadding: false,
+      backgroundColor: primaryColor,
       body: Stack(
         children: <Widget>[
           greyLayout(deviceHeight),
           Padding(
-            padding: const EdgeInsets.only(top: 30.0),
-            child: Column(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: 
+            Column(
               children: <Widget>[
-                FlutterLogo(
-                  size: 150.0,
-                ),
+                Image.asset('assets/logo.png'),
                 card(),
                 Expanded(
                   child: Container(),
@@ -36,10 +50,10 @@ class LoginPage extends StatelessWidget {
       height: deviceHeight * .4,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: primaryColor,
+        color: secondaryColor,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20.0),
-          bottomRight: Radius.circular(20.0),
+          bottomLeft: Radius.elliptical(500.0, 50.0),
+          bottomRight: Radius.elliptical(500.0, 50.0),
         ),
       ),
     );
@@ -47,11 +61,13 @@ class LoginPage extends StatelessWidget {
 
   Widget card() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(24.0),
       child: Card(
+        shape: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12.0))),
         elevation: 12.0,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -95,11 +111,14 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             splashColor: Colors.transparent,
-            highlightColor: Colors.redAccent,
+            highlightColor: Colors.transparent,
             onPressed: () {
               textController.clear();
             },
-            child: new Icon(Icons.clear),
+            child: new Icon(
+              Icons.clear,
+              color: Colors.blueGrey,
+            ),
           ),
         ),
       ],
@@ -107,14 +126,12 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget passwordInput() {
-    final TextEditingController textController = new TextEditingController();
-
     return Stack(
       alignment: const Alignment(1.0, 0.0),
       children: <Widget>[
         TextField(
           keyboardType: TextInputType.text,
-          obscureText: true,
+          obscureText: _hidePassword,
           autofocus: false,
           decoration: InputDecoration(
             hintText: 'Password',
@@ -133,14 +150,14 @@ class LoginPage extends StatelessWidget {
                 topRight: Radius.circular(32.0),
               ),
             ),
-            splashColor: Colors.redAccent,
+            splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onPressed: () {
-              textController.clear();
+              setState(() {
+                _hidePassword = !_hidePassword;
+              });
             },
-            child: new Icon(
-              Icons.clear,
-            ),
+            child: new Icon(Icons.remove_red_eye, color: Colors.blueGrey),
           ),
         )
       ],
@@ -148,12 +165,18 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget loginButton() {
+   
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0),
       child: RaisedButton(
         shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)),
-        onPressed: () {},
+        onPressed: () async {
+           SharedPreferences prefs = await SharedPreferences.getInstance();
+           prefs.setBool('isLogged', true);
+           Navigator.of(context).pushNamed('/home');
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0),
           child: Text(

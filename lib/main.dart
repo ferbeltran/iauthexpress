@@ -21,12 +21,17 @@ class AuthExpress extends StatelessWidget {
       return LoginPage();
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      title: 'iAuthExpress',
        debugShowCheckedModeBanner: false,
        home: showPageWetherLoggedOrNot(),
+       routes: <String, WidgetBuilder> { //5
+        '/login': (BuildContext context) => new LoginPage(),
+        '/home' : (BuildContext context) => new HomePage()
+      },
     );
   }
 }
