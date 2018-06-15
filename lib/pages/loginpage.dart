@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
-      backgroundColor: primaryColor,
+      backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
           greyLayout(deviceHeight),
@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       height: deviceHeight * .4,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: secondaryColor,
+        color: primaryColor,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.elliptical(500.0, 50.0),
           bottomRight: Radius.elliptical(500.0, 50.0),
@@ -165,8 +165,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget loginButton() {
-   
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0),
       child: RaisedButton(

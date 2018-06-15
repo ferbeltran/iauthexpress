@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future getJson() async {
-    String auth = 'Basic ' + base64Encode(utf8.encode('yaTuSabe'));
+    String auth = 'Basic ' + base64Encode(utf8.encode('Admin:i\$olV3r2019'));
     print(auth);
     var response = await http.get(uri, headers: {'authorization': auth});
 
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
       this.setState(() {
         orders = body.map<Order>((o) => new Order.fromMap(o)).toList();
-        print(orders);
+
         _isLoading = false;
       });
     }
@@ -47,15 +47,15 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           'Authorizations',
           style: TextStyle(
-            color: primaryColor,
+            color: Colors.white,
             fontSize: 20.0,
           ),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: primaryColor,
         elevation: 0.0,
         leading: IconButton(
           icon: Icon(Icons.menu),
-          color: primaryColor,
+          color: Colors.white,
           onPressed: () {},
         ),
       ),
@@ -67,9 +67,18 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: secondaryColor,
-        child: Icon(Icons.cloud),
-        tooltip: 'Empresionante',
+        child: Icon(Icons.flash_on),
+        tooltip: 'Authorize Orders',
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: BottomAppBar(
+          child: Container(
+        height: 40.0,
+        color: primaryColor,
+        child: Row(
+          children: <Widget>[],
+        ),
+      )),
     );
   }
 
@@ -82,25 +91,42 @@ class _HomePageState extends State<HomePage> {
             itemCount: orders.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Expanded(child: Text(orders[index].orderNumber)),
-                    Expanded(child: Text(orders[index].customerName)),
-                    Expanded(child: Text('\$${orders[index].amount}')),
                     Expanded(
-                      child: Checkbox(
-                        value: orders[index].confirm,
-                        onChanged: (b) {},
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // Text('Order', style: TextStyle(color: Colors.grey)),
+                          Text(orders[index].orderNumber,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 17.0)),
+                        ],
                       ),
                     ),
                     Expanded(
-                      child: Checkbox(
-                        value: orders[index].authorize,
-                        onChanged: (b) {},
-                      ),
+                      child: Text(orders[index].customerName),
+                    ),
+                    Expanded(
+                      child: Text('\$${orders[index].amount}',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Expanded(
+                      child: Text(orders[index]
+                          .shipDate
+                          .substring(5, 10)
+                          .replaceRange(2, 3, '/')),
+                    ),
+                    Checkbox(
+                      value: orders[index].confirm,
+                      onChanged: (b) {},
+                    ),
+                    Checkbox(
+                      value: orders[index].authorize,
+                      onChanged: (b) {},
                     )
                   ],
                 ),
