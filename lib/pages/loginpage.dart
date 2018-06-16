@@ -25,18 +25,18 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
-          greyLayout(deviceHeight),
+          _buildLayout(deviceHeight),
           Padding(
             padding: const EdgeInsets.only(top: 40.0),
             child: 
             Column(
               children: <Widget>[
                 Image.asset('assets/logo.png'),
-                card(),
+                _buildCard(),
                 Expanded(
                   child: Container(),
                 ),
-                loginButton(),
+                _buildLoginButton(),
               ],
             ),
           ),
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget greyLayout(double deviceHeight) {
+  Widget _buildLayout(double deviceHeight) {
     return Container(
       height: deviceHeight * .4,
       width: double.infinity,
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget card() {
+  Widget _buildCard() {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Card(
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget loginButton() {
+  Widget _buildLoginButton() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0),
       child: RaisedButton(
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
            SharedPreferences prefs = await SharedPreferences.getInstance();
            prefs.setBool('isLogged', true);
-           Navigator.of(context).pushNamed('/home');
+           Navigator.of(context).pushReplacementNamed('/home');
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0),

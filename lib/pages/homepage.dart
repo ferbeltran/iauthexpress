@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future getJson() async {
-    String auth = 'Basic ' + base64Encode(utf8.encode('Admin:i\$olV3r2019'));
+    String auth = 'Basic ' + base64Encode(utf8.encode('YaTeLaSabe'));
     print(auth);
     var response = await http.get(uri, headers: {'authorization': auth});
 
@@ -66,23 +66,38 @@ class _HomePageState extends State<HomePage> {
           : _unauthorizedOrders(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: secondaryColor,
-        child: Icon(Icons.flash_on),
+        backgroundColor: primaryColor,
+        child: Icon(Icons.whatshot),
         tooltip: 'Authorize Orders',
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      bottomNavigationBar: BottomAppBar(
-          child: Container(
-        height: 40.0,
-        color: primaryColor,
-        child: Row(
-          children: <Widget>[],
-        ),
-      )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: SafeArea(
+        child: BottomAppBar(
+            child: Container(
+          height: 40.0,
+          color: primaryColor,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  'Orders: ${orders.length}',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        )),
+      ),
     );
   }
 
   Widget _unauthorizedOrders() {
+    double deviceWidth = MediaQuery.of(context).size.width - 20;
+
     return new Container(
       child: Column(
         children: <Widget>[
@@ -92,42 +107,67 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
                 child: Row(
                   children: <Widget>[
-                    Expanded(
+                    //1st column
+                    Container(
+                      width: deviceWidth / 4,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          // Text('Order', style: TextStyle(color: Colors.grey)),
+                          Text('Order', style: TextStyle(color: Colors.grey)),
                           Text(orders[index].orderNumber,
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 17.0)),
+                                  fontWeight: FontWeight.bold, fontSize: 16.0)),
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Text(orders[index].customerName),
+
+                    //2nd column
+                    Container(
+                      width: deviceWidth / 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(orders[index].customerName),
+                          Text(orders[index]
+                              .shipDate
+                              .substring(5, 10)
+                              .replaceRange(2, 3, '/')),
+                        ],
+                      ),
                     ),
-                    Expanded(
-                      child: Text('\$${orders[index].amount}',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+
+                    //3rd column
+                    Container(
+                      width: deviceWidth / 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text('\$' + orders[index].amount.toStringAsFixed(2),
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
-                    Expanded(
-                      child: Text(orders[index]
-                          .shipDate
-                          .substring(5, 10)
-                          .replaceRange(2, 3, '/')),
+
+                    //4th column
+                    Container(
+                      width: deviceWidth / 4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Checkbox(
+                            value: orders[index].confirm,
+                            onChanged: (b) {},
+                          ),
+                          Checkbox(
+                            value: orders[index].authorize,
+                            onChanged: (b) {},
+                          )
+                        ],
+                      ),
                     ),
-                    Checkbox(
-                      value: orders[index].confirm,
-                      onChanged: (b) {},
-                    ),
-                    Checkbox(
-                      value: orders[index].authorize,
-                      onChanged: (b) {},
-                    )
                   ],
                 ),
               );
@@ -138,3 +178,38 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+// Padding(
+//                 padding:
+//                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: <Widget>[
+
+//                     Container(
+//                       width: deviceWidth / 4,
+//                       child: Column(
+//                                    mainAxisAlignment: MainAxisAlignment.start,
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: <Widget>[
+
+//                         ],
+//                       ),
+//                     ),
+
+//                     Container(
+//                        width: deviceWidth / 4,
+//                         child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: <Widget>[
+
+//                         ],
+//                       ),
+//                     ),
+
+//                     Row(
+
+//                     ),
+//                   ],
+//                 ),
+//               );
