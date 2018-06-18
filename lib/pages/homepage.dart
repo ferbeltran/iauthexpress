@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future getJson() async {
-    String auth = 'Basic ' + base64Encode(utf8.encode('Admin:i\$olV3r2019'));
+    String auth = 'Basic ' + base64Encode(utf8.encode('TeKieroMucho'));
     print(auth);
     var response = await http.get(uri, headers: {'authorization': auth});
 

@@ -32,6 +32,7 @@ class AuthExpress extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: primaryColor,
         primarySwatch: Colors.red,
+        fontFamily: 'Lato',
       ),
        debugShowCheckedModeBanner: false,
        home: showPageWetherLoggedOrNot(),
