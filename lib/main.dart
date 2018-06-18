@@ -17,13 +17,11 @@ class AuthExpress extends StatelessWidget {
   AuthExpress({this.preferences});
 
   Widget showPageWetherLoggedOrNot() {
-    // if (preferences.getBool('isLogged') == true) 
-    //   return HomePage();
-    // else {
-    //   return LoginPage();
-    // }
-
-    return LoginPage();
+    if (preferences.getBool('isLogged') == true) 
+      return HomePage();
+    else {
+      return LoginPage();
+    }
   }
   
   @override
