@@ -51,35 +51,20 @@ class _HomePageState extends State<HomePage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : _unauthorizedOrders(),
-      floatingActionButton: FloatingActionButton(
+          : new Container(color: Colors.white, child: _unauthorizedOrders()),
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
-        backgroundColor: primaryColor,
-        child: Icon(Icons.flash_on, size: 30.0,),
+        backgroundColor: secondaryColor,
+        icon: Icon(
+          Icons.flash_on,
+          size: 30.0,
+        ),
+        label: Text('Auth'),
         tooltip: 'Authorize Orders',
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: SafeArea(
-        child: BottomAppBar(
-            child: Container(
-          height: 40.0,
-          color: primaryColor,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Text(
-                  'Orders: ${orders.length}',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        )),
-      ),
+      backgroundColor: primaryColor,
+      bottomNavigationBar: _buildBottomAppBar(),
     );
   }
 
@@ -96,7 +81,32 @@ class _HomePageState extends State<HomePage> {
       elevation: 0.0,
     );
   }
-
+  Widget _buildBottomAppBar() {
+    return SafeArea(
+        child: BottomAppBar(
+          elevation: 0.0,
+          hasNotch: false,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Expanded(
+                child: Container(
+                  color: primaryColor,
+                  child: new Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Orders: ${orders.length}',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+  }
   Widget _buildDrawer() {
     return Drawer(
       child: Column(
@@ -126,8 +136,7 @@ class _HomePageState extends State<HomePage> {
               color: primaryColor,
             ),
           ),
-
-           ListTile(
+          ListTile(
             leading: Icon(
               FontAwesomeIcons.addressCard,
               color: Colors.redAccent,
@@ -140,12 +149,10 @@ class _HomePageState extends State<HomePage> {
                 color: primaryColor,
               ),
             ),
-           
             onTap: () {
               Navigator.pop(context);
             },
           ),
-
           ListTile(
             leading: Icon(
               Icons.code,
