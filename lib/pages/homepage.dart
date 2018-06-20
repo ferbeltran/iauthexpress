@@ -48,8 +48,11 @@ class _HomePageState extends State<HomePage> {
       appBar: _buildAppBar(),
       drawer: _buildDrawer(),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: new Center(child: CircularProgressIndicator()),
             )
           : new Container(color: Colors.white, child: _unauthorizedOrders()),
       floatingActionButton: FloatingActionButton.extended(
@@ -81,32 +84,33 @@ class _HomePageState extends State<HomePage> {
       elevation: 0.0,
     );
   }
+
   Widget _buildBottomAppBar() {
     return SafeArea(
-        child: BottomAppBar(
+      child: BottomAppBar(
           elevation: 0.0,
           hasNotch: false,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-                Expanded(
-                child: Container(
-                  color: primaryColor,
-                  child: new Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Orders: ${orders.length}',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                    ),
-                  ),
+          child: Container(
+            height: 40.0,
+            color: primaryColor,
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _isLoading
+                      ? null
+                      : Text(
+                          'Orders: ${orders.length}',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 17.0),
+                        ),
                 ),
-              )
-            ],
-          ),
-        ),
-      );
+              ],
+            ),
+          )),
+    );
   }
+
   Widget _buildDrawer() {
     return Drawer(
       child: Column(
@@ -205,7 +209,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(32.0),
             child: RaisedButton(
               color: secondaryColor,
               shape: RoundedRectangleBorder(
@@ -295,7 +299,11 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: Checkbox(
                               value: orders[index].confirm,
-                              onChanged: (b) {},
+                              onChanged: (b) {
+                                setState(() {
+                                  b = !b;
+                                });
+                              },
                             ),
                           ),
                           Expanded(
