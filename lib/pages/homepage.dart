@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/message.dart';
 import '../models/order.dart';
 import '../utils/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   final uri =
       'http://mobiledemoapi.cloudapp.net/api/expressauth/getunauthorizedorders';
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -26,9 +31,11 @@ class _HomePageState extends State<HomePage> {
     this.getJson();
   }
 
-  Future getJson() async {
+  Future<Null> getJson() async {
+    this.setState(() {
+      _isLoading = true;
+    });
     String auth = 'Basic ' + base64Encode(utf8.encode('Admin:i\$olV3r2019'));
-    print(auth);
     var response = await http.get(uri, headers: {'authorization': auth});
 
     if (response.statusCode == 200) {
@@ -42,27 +49,39 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _showSnackbar(String textToShow) {
+    final snackBar = SnackBar(
+      content: Text(textToShow),
+      duration: Duration(seconds: 2),
+    );
+
+    scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: scaffoldKey,
       appBar: _buildAppBar(),
-      drawer: _buildDrawer(),
+      drawer: DrawerMenu(),
       body: _isLoading
           ? Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: new Center(child: CircularProgressIndicator()),
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.white,
+              child: new Center(child: CircularProgressIndicator()),
             )
           : new Container(color: Colors.white, child: _unauthorizedOrders()),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {},
+
         backgroundColor: secondaryColor,
-        icon: Icon(
-          Icons.flash_on,
-          size: 30.0,
-        ),
-        label: Text('Auth'),
+        child: Icon(Icons.flash_on, size: 30.0),
+        // icon: Icon(
+        //   Icons.flash_on,
+        //   size: 30.0,
+        // ),
+        // label: Text('Auth'),
         tooltip: 'Authorize Orders',
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -89,11 +108,12 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: BottomAppBar(
           elevation: 0.0,
-          hasNotch: false,
+          hasNotch: true,
           child: Container(
             height: 40.0,
             color: primaryColor,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -102,226 +122,171 @@ class _HomePageState extends State<HomePage> {
                       : Text(
                           'Orders: ${orders.length}',
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w500, fontSize: 17.0),
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0),
                         ),
                 ),
-              ],
-            ),
-          )),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          DrawerHeader(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Image.asset(
-                  'assets/logo.png',
-                  width: 100.0,
-                  height: 100.0,
-                ),
-                Text(
-                  'v3.0.0',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Text(
+                    'Can Confirm / Auth',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.0),
                   ),
                 ),
               ],
             ),
-            decoration: BoxDecoration(
-              color: primaryColor,
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              FontAwesomeIcons.addressCard,
-              color: Colors.redAccent,
-            ),
-            title: Text(
-              'My Fresh Company',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: primaryColor,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.code,
-              color: Colors.green,
-            ),
-            title: Text(
-              'Developed by',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: primaryColor,
-              ),
-            ),
-            subtitle: Text(
-              'iSolve Technologies',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.account_circle,
-              color: Colors.blue,
-            ),
-            title: Text(
-              'Logged as',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-                color: primaryColor,
-              ),
-            ),
-            subtitle: Text(
-              'support@isolveproduce.com',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          Expanded(
-            child: Container(),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: RaisedButton(
-              color: secondaryColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setBool('isLogged', false);
-                Navigator.of(context).pushReplacementNamed('/login');
-              },
-              child: Text(
-                'Logout',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+          )),
     );
   }
 
   Widget _unauthorizedOrders() {
     double deviceWidth = MediaQuery.of(context).size.width - 20;
-
-    return new Container(
-      child: Column(
-        children: <Widget>[
-          Flexible(
+    return RefreshIndicator(
+      onRefresh: getJson,
+      child: new Container(
+        child: Column(
+          children: <Widget>[
+            Flexible(
               child: ListView.builder(
-            itemCount: orders.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                child: Row(
-                  children: <Widget>[
-                    //1st column
-                    Container(
-                      width: deviceWidth / 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Order', style: TextStyle(color: Colors.grey)),
-                          Text(orders[index].orderNumber,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16.0)),
-                        ],
+                itemCount: orders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            orders[index].showMessages =
+                                !orders[index].showMessages;
+                          });
+                        },
+                        child: firstRow(context, index, deviceWidth / 4),
                       ),
-                    ),
+                      orders[index].showMessages
+                          ? secondRow(orders[index].messages, context)
+                          : Container(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                    //2nd column
-                    Container(
-                      width: deviceWidth / 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(orders[index].customerName),
-                          Text(orders[index]
-                              .shipDate
-                              .substring(5, 10)
-                              .replaceRange(2, 3, '/')),
-                        ],
-                      ),
-                    ),
+  Widget firstRow(BuildContext context, int index, double columnWidth) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+      child: Row(
+        children: <Widget>[
+          //1st column
+          Container(
+            width: columnWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Order', style: TextStyle(color: Colors.grey)),
+                Text(orders[index].orderNumber,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+              ],
+            ),
+          ),
 
-                    //3rd column
-                    Container(
-                      width: deviceWidth / 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Text('\$' + orders[index].amount.toStringAsFixed(2),
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
+          //2nd column
+          Container(
+            width: columnWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(orders[index].customerName),
+                Text(
+                    orders[index]
+                        .shipDate
+                        .substring(5, 10)
+                        .replaceRange(2, 3, '/'),
+                    style: TextStyle(
+                        color: Colors.redAccent, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
 
-                    //4th column
-                    Container(
-                      width: deviceWidth / 4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Checkbox(
-                              value: orders[index].confirm,
-                              onChanged: (b) {
-                                setState(() {
-                                  b = !b;
-                                });
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: Checkbox(
-                              value: orders[index].authorize,
-                              onChanged: (b) {},
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+          //3rd column
+          Container(
+            width: columnWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text('\$' + orders[index].amount.toStringAsFixed(2),
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+
+          //4th column
+          Container(
+            width: columnWidth,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Checkbox(
+                      value: orders[index].confirm,
+                      onChanged: orders[index].canConfirm
+                          ? (bool newValue) {
+                              setState(() {
+                                orders[index].confirm = newValue;
+                              });
+                            }
+                          : null),
                 ),
-              );
-            },
-          )),
+                Expanded(
+                  child: Checkbox(
+                    value: orders[index].authorize,
+                    onChanged: (bool newValue) {
+                      setState(() {
+                        orders[index].authorize = newValue;
+                      });
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Widget secondRow(List<Message> messages, BuildContext context) {
+    return Container(
+        height: messages.length * 40.0,
+        width: double.infinity,
+        child: ListView.builder(
+          itemCount: messages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 8.0,
+                ),
+                Text(
+                  messages[index].type,
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Expanded(child: Text(messages[index].message))
+              ],
+            );
+          },
+        ));
   }
 }
