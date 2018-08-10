@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
       'http://mobiledemoapi.cloudapp.net/api/expressauth/getunauthorizedorders';
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final PageStorageBucket bucket = PageStorageBucket();
 
   @override
   void initState() {
@@ -71,7 +72,10 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
               child: new Center(child: CircularProgressIndicator()),
             )
-          : new Container(color: Colors.white, child: _unauthorizedOrders()),
+          : PageStorage(
+              bucket: bucket,
+              child:
+                  Container(color: Colors.white, child: _unauthorizedOrders())),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
 
