@@ -8,6 +8,7 @@ import '../models/order.dart';
 import '../utils/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../utils/const.dart';
 import '../widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     this.setState(() {
       _isLoading = true;
     });
-    String auth = 'Basic ' + base64Encode(utf8.encode('Admin:i\$olV3r2019'));
+    String auth = 'Basic ' + base64Encode(utf8.encode('CREDENTIALS'));
     var response = await http.get(uri, headers: {'authorization': auth});
 
     if (response.statusCode == 200) {
